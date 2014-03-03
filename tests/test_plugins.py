@@ -14,9 +14,10 @@
 # under the License.
 import optparse
 import shutil
-import nonobot.plugins
 import tempfile
 import unittest
+
+import nonobot.plugins
 
 SAMPLE_ARGUMENT_PLUGIN = """
 def _arguments(o):
@@ -33,6 +34,7 @@ class Plugin:
         "THIS IS SOME DOC"
         pass
 """
+
 
 class PluginTest(unittest.TestCase):
     def test_get_all_plugin_modules(self):
@@ -97,16 +99,16 @@ class PluginTest(unittest.TestCase):
             except OSError as exc:
                 if exc.errno != 2:
                     raise
-    def test_plugin_add_extra_options(self):
+
+    def test_plugin_methods(self):
         try:
             path = tempfile.mkdtemp()
             test_file = path + "/t1.py"
             open(test_file, 'w').write(SAMPLE_PLUGIN_METHOD)
-            optp = optparse.OptionParser()
             plugins = nonobot.plugins.get_plugins_methods(path, {'foo: bar'})
-            self.assertEquals(len(plugins), 1)
+            self.assertEqual(len(plugins), 1)
             first_plugin = plugins[plugins.keys()[0]]
-            self.assertEquals(len(first_plugin), 2)
+            self.assertEqual(len(first_plugin), 2)
             self.assertIn('foo', first_plugin)
             self.assertIn('foo_doc', first_plugin)
             self.assertEqual(first_plugin['foo_doc']['doc'],

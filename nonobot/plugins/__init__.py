@@ -1,7 +1,7 @@
 # coding=utf-8
+import imp
 import inspect
 import os
-import imp
 
 
 def get_all_plugin_modules(path):
@@ -40,4 +40,3 @@ def get_plugins_methods(path, config):
 
         plugins[plugin] = actions
     return plugins
-

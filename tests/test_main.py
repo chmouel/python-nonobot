@@ -13,9 +13,9 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import unittest
 import mock
 import socket
+import unittest
 
 import nonobot.main
 
@@ -28,22 +28,22 @@ class MainTest(unittest.TestCase):
                 '-j', 'jid@jid.com',
                 '-p', 'password',
                 '-r', 'room@conference.jid.com']
-        self.assertEquals(nonobot.main.main(args), 1)
+        self.assertEqual(nonobot.main.main(args), 1)
         args = ['test',
                 '-j', 'jid@jid.com',
                 '-p', 'password',
                 '-n', 'nick']
-        self.assertEquals(nonobot.main.main(args), 1)
+        self.assertEqual(nonobot.main.main(args), 1)
         args = ['test',
                 '-j', 'jid@jid.com',
                 '-r', 'room@conference.jid.com',
                 '-n', 'nick']
-        self.assertEquals(nonobot.main.main(args), 1)
+        self.assertEqual(nonobot.main.main(args), 1)
         args = ['test',
                 '-p', 'password',
                 '-r', 'room@conference.jid.com',
                 '-n', 'nick']
-        self.assertEquals(nonobot.main.main(args), 1)
+        self.assertEqual(nonobot.main.main(args), 1)
 
     @mock.patch('nonobot.plugins.get_all_plugin_modules', mock.MagicMock())
     @mock.patch('nonobot.base.NoNoBot')
