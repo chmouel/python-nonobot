@@ -10,10 +10,7 @@ def get_all_plugin_modules(path):
             if not f.endswith(".py") or f == '__init__.py':
                 continue
             path_join = os.path.join(dirname, f)
-            imp.load_source("imported", path_join)
-            import imported
-
-            yield imported
+            yield imp.load_source(f.replace('.py', ''), path_join)
 
 
 def plugins_add_extra_options(path, optp):
