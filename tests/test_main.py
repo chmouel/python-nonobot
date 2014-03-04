@@ -23,6 +23,7 @@ import nonobot.main
 class MainTest(unittest.TestCase):
     @mock.patch('nonobot.plugins.plugins_add_extra_options', mock.Mock())
     @mock.patch('optparse.OptionParser.print_help', mock.Mock())
+    @mock.patch('nonobot.plugins.get_all_plugin_modules', mock.MagicMock())
     def test_at_least_options(self):
         args = ['test',
                 '-j', 'jid@jid.com',
