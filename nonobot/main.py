@@ -52,6 +52,7 @@ def main(args=None):
         optp.print_help()
         return 1
 
+    return
     # Setup logging.
     # TODO(chmouel): Fix this.
     logging.basicConfig(level=logging.DEBUG,

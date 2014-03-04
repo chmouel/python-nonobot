@@ -20,8 +20,11 @@ def _arguments(optp):
 
 class Plugin(object):
     def __init__(self, config):
-        # TODO(chmouel): Use config['group_file']
-        self.group_file = GROUPS_PICKLE
+        if config.group_file:
+            self.group_file = config.group_file
+        else:
+            self.group_file = GROUPS_PICKLE
+
         self._groups = {}
         self.config = config
 
