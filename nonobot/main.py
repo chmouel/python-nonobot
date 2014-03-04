@@ -42,12 +42,9 @@ def main(args=None):
     optp.add_option("-n", "--nick", dest="nick",
                     help="MUC nickname")
 
-    #TODO(chmouel): Make it configurable.
     path = nonobot.plugins.__path__[0]
-
     nonobot.plugins.plugins_add_extra_options(path, optp)
     opts, args = optp.parse_args(args=args)
-
     plugins = nonobot.plugins.get_plugins_methods(path, opts)
 
     if not all([opts.jid, opts.nick,
