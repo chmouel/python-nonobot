@@ -52,9 +52,7 @@ def main(args=None):
         optp.print_help()
         return 1
 
-    # Setup logging.
-    # TODO(chmouel): Fix this.
-    logging.basicConfig(level=logging.DEBUG,
+    logging.basicConfig(level=opts.loglevel,
                         format='%(levelname)-8s %(message)s')
 
     xmpp = nonobot.base.NoNoBot(
