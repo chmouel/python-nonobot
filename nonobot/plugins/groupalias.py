@@ -39,6 +39,8 @@ class Plugin(nonobot.plugins.Base):
         """define a group."""
         logging.debug('alias, msg=' + msg)
         _msg = msg.split()
+        if not _msg:
+            return
         alias = _msg[0]
         aliases = _msg[1:]
         self._groups[alias] = aliases
@@ -55,10 +57,12 @@ class Plugin(nonobot.plugins.Base):
 
     def list(self, msg):
         """list all available groups."""
+        ret = []
         for g in self._groups.keys():
-            yield 'alias %s => %s' % (
+            ret.append('alias %s => %s' % (
                 g, ", ".join(self._groups.get(g))
-            )
+            ))
+        return ret
 
     def add(self, msg):
         """add a member to an existing group."""
@@ -77,6 +81,8 @@ class Plugin(nonobot.plugins.Base):
     def stream(self, msg):
         """@group will message to all the group members."""
         _msg = msg.split()
+        if not _msg:
+            return
         alias = _msg[0]
         group_name = alias.replace('@', '')
         body_msg = " ".join(_msg[1:])

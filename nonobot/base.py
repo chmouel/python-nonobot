@@ -1,5 +1,3 @@
-import collections
-
 import sleekxmpp
 
 
@@ -47,8 +45,7 @@ class NoNoBot(sleekxmpp.ClientXMPP):
             if stream is not None:
                 reply_msg = stream
 
-        if isinstance(reply_msg, collections.Iterable) or \
-           type(reply_msg) is list:
+        if type(reply_msg) is list:
             for g in reply_msg:
                 self.send_message(
                     mbody=g,

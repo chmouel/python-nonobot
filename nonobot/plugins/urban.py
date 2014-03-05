@@ -43,13 +43,14 @@ class Plugin(nonobot.plugins.Base):
             item = json['list'][index]
             index_label = '[%d/%d] ' % (index + 1, amount)
         elif method == 'random':
-            rnd = random.randint(0, amount)
+            rnd = random.randint(0, amount - 1)
             item = json['list'][rnd]
             index_label = '[%s]' % (item['word'])
 
         definition = item['definition'].replace('\r\n', " ")
         example = item['example'].replace('\r\n', " ")
-        return "%s %s example: %s / %s" % (index_label,
-                                           definition,
-                                           example,
-                                           item['permalink'])
+        ret = "%s %s example: %s / %s" % (index_label,
+                                          definition,
+                                          example,
+                                          item['permalink'])
+        return ret
