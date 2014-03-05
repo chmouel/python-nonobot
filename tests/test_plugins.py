@@ -35,6 +35,15 @@ class Plugin:
         pass
 """
 
+SAMPLE_PLUGIN_STREAM = """
+class Plugin:
+    def __init__(self, config):
+        pass
+    def stream(self, line):
+        "DOC STREAM"
+        pass
+"""
+
 
 class PluginTest(unittest.TestCase):
     def test_get_all_plugin_modules(self):
@@ -122,6 +131,29 @@ class PluginTest(unittest.TestCase):
             except OSError as exc:
                 if exc.errno != 2:
                     raise
+
+    def test_plugin_stream_method(self):
+        try:
+            path = tempfile.mkdtemp()
+            test_file = path + "/t1.py"
+            open(test_file, 'w').write(SAMPLE_PLUGIN_STREAM)
+            plugins = nonobot.plugins.get_plugins_methods(path, {'foo: bar'})
+            self.assertEqual(len(plugins), 2)
+            first_plugin = plugins[plugins.keys()[0]]
+            self.assertEqual(len(first_plugin), 1)
+            self.assertIn('stream', first_plugin)
+            self.assertEqual(first_plugin['stream']['doc'],
+                             'DOC STREAM')
+            self.assertIn('help', plugins)
+            self.assertEqual(len(plugins['help']), 1)
+            self.assertEqual(plugins['help'], ['DOC STREAM'])
+        finally:
+            try:
+                shutil.rmtree(path)
+            except OSError as exc:
+                if exc.errno != 2:
+                    raise
+
 
     def test_plugin_class(self):
         config = {'hello': 'moto'}
