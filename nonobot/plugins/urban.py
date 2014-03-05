@@ -14,11 +14,13 @@ class Plugin(nonobot.plugins.Base):
         index = 1
         method = 'define'
 
-        if not split:
+        if not split or split[-1].isdigit() and len(split) == 1:
             method = 'random'
         elif split[-1].isdigit():
             index = int(split[-1])
             query = " ".join(split[0:-1])
+        else:
+            query = " ".join(query)
         logging.debug("urban %s: index: %d", query, index)
 
         index = index - 1
