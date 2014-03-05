@@ -116,6 +116,7 @@ class PluginTest(unittest.TestCase):
             open(test_file, 'w').write(SAMPLE_PLUGIN_METHOD)
             plugins = nonobot.plugins.get_plugins_methods(path, {'foo: bar'})
             self.assertEqual(len(plugins), 2)
+            print plugins.keys()
             first_plugin = plugins[plugins.keys()[0]]
             self.assertEqual(len(first_plugin), 2)
             self.assertIn('foo', first_plugin)
@@ -124,7 +125,7 @@ class PluginTest(unittest.TestCase):
                              'THIS IS SOME DOC')
             self.assertIn('help', plugins)
             self.assertEqual(len(plugins['help']), 1)
-            self.assertEqual(plugins['help'], ['foo_doc: THIS IS SOME DOC'])
+            self.assertEqual(plugins['help'], ['[t1] foo_doc: THIS IS SOME DOC'])
         finally:
             try:
                 shutil.rmtree(path)
@@ -135,7 +136,7 @@ class PluginTest(unittest.TestCase):
     def test_plugin_stream_method(self):
         try:
             path = tempfile.mkdtemp()
-            test_file = path + "/t1.py"
+            test_file = path + "/tstream.py"
             open(test_file, 'w').write(SAMPLE_PLUGIN_STREAM)
             plugins = nonobot.plugins.get_plugins_methods(path, {'foo: bar'})
             self.assertEqual(len(plugins), 2)
@@ -146,14 +147,13 @@ class PluginTest(unittest.TestCase):
                              'DOC STREAM')
             self.assertIn('help', plugins)
             self.assertEqual(len(plugins['help']), 1)
-            self.assertEqual(plugins['help'], ['DOC STREAM'])
+            self.assertEqual(plugins['help'], ['[tstream] DOC STREAM'])
         finally:
             try:
                 shutil.rmtree(path)
             except OSError as exc:
                 if exc.errno != 2:
                     raise
-
 
     def test_plugin_class(self):
         config = {'hello': 'moto'}

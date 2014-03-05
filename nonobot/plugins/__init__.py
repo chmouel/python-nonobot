@@ -36,9 +36,10 @@ def get_plugins_methods(path, config):
                 action = a[1]
                 doc = a[1].__doc__
                 if method_name == 'stream':
-                    docstr = doc
+                    docstr = "[%s] %s" % (imported.__name__, doc)
                 else:
-                    docstr = "%s: %s" % (method_name, doc)
+                    docstr = "[%s] %s: %s" % (imported.__name__,
+                                              method_name, doc)
                 if doc is not None:
                     docs.append(docstr)
                 actions[method_name] = dict(action=action, doc=doc)
