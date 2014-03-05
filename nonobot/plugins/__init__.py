@@ -23,6 +23,7 @@ def plugins_add_extra_options(path, optp):
 
 def get_plugins_methods(path, config):
     plugins = {}
+    docs = []
 
     for imported in get_all_plugin_modules(path):
         plugin = imported.Plugin(config)
@@ -32,10 +33,14 @@ def get_plugins_methods(path, config):
         for a in attributes:
             method_name = a[0]
             if not method_name.startswith('_'):
-                # TODO(chmouel): Build help command
-                actions[method_name] = dict(action=a[1], doc=a[1].__doc__)
-
+                action = a[1]
+                doc = a[1].__doc__
+                if doc:
+                    docs.append("%s: %s" % (method_name, doc))
+                actions[method_name] = dict(action=action, doc=doc)
         plugins[plugin] = actions
+
+    plugins['help'] = docs
     return plugins
 
 

@@ -1,4 +1,4 @@
-import types
+import collections
 
 import sleekxmpp
 
@@ -31,10 +31,13 @@ class NoNoBot(sleekxmpp.ClientXMPP):
         if body.startswith(self.nick + ":"):
             _line = body[len(self.nick) + 1:].split()
             action = _line[0]
-            for plugin in self.plugins:
-                if action in self.plugins[plugin]:
-                    action_ = self.plugins[plugin][action]['action']
-                    reply_msg = action_(" ".join(_line[1:]))
+            if action == 'help' and 'help' in self.plugins:
+                reply_msg = self.plugins['help']
+            else:
+                for plugin in self.plugins:
+                    if action in self.plugins[plugin]:
+                        action_ = self.plugins[plugin][action]['action']
+                        reply_msg = action_(" ".join(_line[1:]))
 
         for plugin in self.plugins:
             if 'stream' not in self.plugins[plugin]:
@@ -44,13 +47,14 @@ class NoNoBot(sleekxmpp.ClientXMPP):
             if stream is not None:
                 reply_msg = stream
 
-        if isinstance(reply_msg, types.GeneratorType):
+        if isinstance(reply_msg, collections.Iterable) or \
+           type(reply_msg) is list:
             for g in reply_msg:
                 self.send_message(
                     mbody=g,
                     mto=msg['from'].bare,
                     mtype='groupchat')
-        else:
+        elif reply_msg:
             self.send_message(
                 mbody=reply_msg,
                 mto=msg['from'].bare,

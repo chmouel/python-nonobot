@@ -106,13 +106,16 @@ class PluginTest(unittest.TestCase):
             test_file = path + "/t1.py"
             open(test_file, 'w').write(SAMPLE_PLUGIN_METHOD)
             plugins = nonobot.plugins.get_plugins_methods(path, {'foo: bar'})
-            self.assertEqual(len(plugins), 1)
+            self.assertEqual(len(plugins), 2)
             first_plugin = plugins[plugins.keys()[0]]
             self.assertEqual(len(first_plugin), 2)
             self.assertIn('foo', first_plugin)
             self.assertIn('foo_doc', first_plugin)
             self.assertEqual(first_plugin['foo_doc']['doc'],
                              'THIS IS SOME DOC')
+            self.assertIn('help', plugins)
+            self.assertEqual(len(plugins['help']), 1)
+            self.assertEqual(plugins['help'], ['foo_doc: THIS IS SOME DOC'])
         finally:
             try:
                 shutil.rmtree(path)
