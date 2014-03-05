@@ -67,7 +67,7 @@ class MainTest(unittest.TestCase):
             room=room,
             password=password,
             nick=nick,
-            plugins={}
+            plugins={'help': []}
         )
 
     @mock.patch('nonobot.base.NoNoBot.connect', side_effect=socket.error)
