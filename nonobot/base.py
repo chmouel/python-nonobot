@@ -44,14 +44,14 @@ class NoNoBot(sleekxmpp.ClientXMPP):
             if stream is not None:
                 reply_msg = stream
 
-        if type(reply_msg) is str:
-            self.send_message(
-                mbody=reply_msg,
-                mto=msg['from'].bare,
-                mtype='groupchat')
-        elif isinstance(reply_msg, types.GeneratorType):
+        if isinstance(reply_msg, types.GeneratorType):
             for g in reply_msg:
                 self.send_message(
                     mbody=g,
                     mto=msg['from'].bare,
                     mtype='groupchat')
+        else:
+            self.send_message(
+                mbody=reply_msg,
+                mto=msg['from'].bare,
+                mtype='groupchat')
