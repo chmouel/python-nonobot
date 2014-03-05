@@ -116,7 +116,9 @@ class PluginTest(unittest.TestCase):
             open(test_file, 'w').write(SAMPLE_PLUGIN_METHOD)
             plugins = nonobot.plugins.get_plugins_methods(path, {'foo: bar'})
             self.assertEqual(len(plugins), 2)
-            first_plugin = plugins[plugins.keys()[0]]
+            for i in plugins:
+                if type(i) != str:
+                    first_plugin = plugins[i]
             self.assertEqual(len(first_plugin), 2)
             self.assertIn('foo', first_plugin)
             self.assertIn('foo_doc', first_plugin)
