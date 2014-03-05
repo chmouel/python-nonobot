@@ -1,8 +1,9 @@
 # -*- encoding: utf-8 -*-
-
 import cPickle
 import logging
 import os
+
+import nonobot.plugins
 
 GROUPS_PICKLE = "data/groups.pickle"
 
@@ -18,7 +19,7 @@ def _arguments(optp):
     return optp
 
 
-class Plugin(object):
+class Plugin(nonobot.plugins.Base):
     def __init__(self, config):
         if config.group_file:
             self.group_file = config.group_file

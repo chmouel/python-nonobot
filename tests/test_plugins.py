@@ -119,3 +119,8 @@ class PluginTest(unittest.TestCase):
             except OSError as exc:
                 if exc.errno != 2:
                     raise
+
+    def test_plugin_class(self):
+        config = {'hello': 'moto'}
+        cl = nonobot.plugins.Base(config)
+        self.assertIn('hello', cl.config)

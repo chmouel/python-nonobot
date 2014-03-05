@@ -37,3 +37,8 @@ def get_plugins_methods(path, config):
 
         plugins[plugin] = actions
     return plugins
+
+
+class Base(object):
+    def __init__(self, config):
+        self.config = config

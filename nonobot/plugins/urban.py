@@ -2,13 +2,12 @@ import logging
 import random
 import requests
 
+import nonobot.plugins
+
 BASE_URL = 'http://api.urbandictionary.com/v0'
 
 
-class Plugin(object):
-    def __init__(self, config):
-        self.config = config
-
+class Plugin(nonobot.plugins.Base):
     def urban(self, query):
         split = query.split()
         index = 1
