@@ -9,6 +9,7 @@ BASE_URL = 'http://api.urbandictionary.com/v0'
 
 class Plugin(nonobot.plugins.Base):
     def urban(self, query):
+        """get a definition from urban dictionary (eg: urban foo 3)"""
         split = query.split()
         index = 1
         method = 'define'

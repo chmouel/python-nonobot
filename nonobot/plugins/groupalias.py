@@ -36,7 +36,7 @@ class Plugin(nonobot.plugins.Base):
         cPickle.dump(self._groups, open(self.group_file, 'wb'))
 
     def alias(self, msg):
-        """Define an alias."""
+        """define a group."""
         logging.debug('alias, msg=' + msg)
         _msg = msg.split()
         alias = _msg[0]
@@ -47,21 +47,21 @@ class Plugin(nonobot.plugins.Base):
             alias, " ".join(aliases))
 
     def delete(self, msg):
-        """Delete an alias."""
+        """delete a group."""
         alias = msg.split()[0]
         del self._groups[alias]
         self._save_group_file()
         return "%s has been deleted" % alias
 
     def list(self, msg):
-        """List all available groups."""
+        """list all available groups."""
         for g in self._groups.keys():
             yield 'alias %s => %s' % (
                 g, ", ".join(self._groups.get(g))
             )
 
     def add(self, msg):
-        """Add a member to an existing alias."""
+        """add a member to an existing group."""
         _msg = msg.split()
         alias = _msg[0]
         aliases = _msg[1:]
@@ -75,6 +75,7 @@ class Plugin(nonobot.plugins.Base):
             return 'group %s has not been defined yet use alias' % alias
 
     def stream(self, msg):
+        """@group will message to all the group members."""
         _msg = msg.split()
         alias = _msg[0]
         group_name = alias.replace('@', '')
