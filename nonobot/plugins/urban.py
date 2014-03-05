@@ -33,6 +33,9 @@ class Plugin(nonobot.plugins.Base):
 
         # Probably need to do better than that
         amount = len(json['list'])
+        if amount == 0:
+            return "Don't make up crap please. That thing don't even " \
+                "exist in the urban dictionary"
         if index > amount:
             return "That's way too much we have only %s items" % index
 
