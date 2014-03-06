@@ -28,8 +28,9 @@ BASE_URL = 'https://bugs.launchpad.net/bugs'
 
 
 class Plugin(nonobot.plugins.Base):
-    def __init__(self, config):
-        if launchpad:
+    def __init__(self, config, launchpad_loaded=launchpad):
+        self.lp = None
+        if launchpad_loaded:
             self.lp = launchpad.Launchpad.login_anonymously(
                 'nonobotgrab', 'production', tempfile.gettempdir())
 
@@ -38,7 +39,7 @@ class Plugin(nonobot.plugins.Base):
         match = bug_re.match(line)
         if not match:
             return
-        if launchpad:
+        if self.lp:
             try:
                 # TODO(chmouel): chaching
                 lpbug = self.lp.bugs(int(match.group(1)))
