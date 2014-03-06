@@ -25,7 +25,11 @@ class Plugin(nonobot.plugins.Base):
         if not match:
             return
         if launchpad:
-            lpbug = self.lp.bugs(int(match.group(1)))
+            try:
+                # TODO(chmouel): chaching
+                lpbug = self.lp.bugs(int(match.group(1)))
+            except(KeyError):
+                return "There is no such bug '%s'" % match.group(1)
             if lpbug:
                 return "[Bug %s] %s - %s" % (match.group(1),
                                              lpbug.title,
