@@ -1,4 +1,8 @@
-from launchpadlib import launchpad
+try:
+    from launchpadlib import launchpad
+except ImportError:
+    launchpad = False
+
 import re
 import tempfile
 
@@ -11,18 +15,20 @@ BASE_URL = 'https://bugs.launchpad.net/bugs'
 
 class Plugin(nonobot.plugins.Base):
     def __init__(self, config):
-        self.lp = launchpad.Launchpad.login_anonymously(
-            'nonobotgrab', 'production', tempfile.gettempdir())
+        if launchpad:
+            self.lp = launchpad.Launchpad.login_anonymously(
+                'nonobotgrab', 'production', tempfile.gettempdir())
 
     def stream(self, line):
         """parse 'bug number' and expand it to launchpad bug url."""
         match = bug_re.match(line)
         if not match:
             return
-        lpbug = self.lp.bugs(1075971)
-        if lpbug:
-            return "[Bug %s] %s - %s" % (match.group(1),
-                                         lpbug.title,
-                                         lpbug.web_link)
+        if launchpad:
+            lpbug = self.lp.bugs(1075971)
+            if lpbug:
+                return "[Bug %s] %s - %s" % (match.group(1),
+                                             lpbug.title,
+                                             lpbug.web_link)
         else:
             return '{0}/{1}'.format(BASE_URL, match.group(1))
