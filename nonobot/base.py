@@ -40,6 +40,9 @@ class NoNoBot(sleekxmpp.ClientXMPP):
         reply_msg = None
         body = msg['body']
 
+        if not self.plugins:
+            return
+
         if body.startswith(self.nick + ":"):
             _line = body[len(self.nick) + 1:].split()
             action = _line[0]
