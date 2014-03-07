@@ -16,6 +16,10 @@ import shutil
 import tempfile
 
 
+class FakeFrom(object):
+    bare = 'thedude'
+
+
 class cleaned_tempdir(object):
     def __enter__(self):
         self.path = tempfile.mkdtemp()
