@@ -86,7 +86,7 @@ class Plugin(nonobot.plugins.Base):
         if alias in self._groups:
             self._groups[alias] = self._groups[alias] + aliases
             self._save_group_file()
-            return "%s aliases has been add to %s" % (
+            return "%s aliases has been added to %s" % (
                 " ".join(aliases), alias)
         else:
             return 'group %s has not been defined yet use alias' % alias
