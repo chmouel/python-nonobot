@@ -33,8 +33,6 @@ class Plugin(nonobot.plugins.Base):
         elif split[-1].isdigit():
             index = int(split[-1])
             query = " ".join(split[0:-1])
-        else:
-            query = " ".join(query)
         logging.debug("urban %s: index: %d", query, index)
 
         index = index - 1
@@ -45,6 +43,7 @@ class Plugin(nonobot.plugins.Base):
 
         logging.debug('urban: url: %s', url)
         req = requests.get(url)
+
         json = req.json()
 
         # Probably need to do better than that
