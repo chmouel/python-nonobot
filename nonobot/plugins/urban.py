@@ -52,7 +52,7 @@ class Plugin(nonobot.plugins.Base):
             return "Don't make up crap please. That thing don't even " \
                 "exist in the urban dictionary"
         if index > amount:
-            return "That's way too much we have only %s items" % index
+            return "That's way too much we have only %s items" % amount
 
         if method == 'define':
             item = json['list'][index]
