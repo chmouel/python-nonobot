@@ -150,7 +150,7 @@ class BaseTest(unittest.TestCase):
     @mock.patch('sleekxmpp.ClientXMPP.send_message')
     def test_stream(self, mocked):
         with fixtures.cleaned_tempdir() as path:
-            test_file = path + "/testcommand.py"
+            test_file = path + "/teststream.py"
             open(test_file, 'w').write(SAMPLE_PLUGIN_STREAM)
             plugins = nonobot.plugins.get_plugins_methods(path, {'foo: bar'})
             cls = nonobot.base.NoNoBot(
