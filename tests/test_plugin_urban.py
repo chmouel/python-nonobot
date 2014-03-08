@@ -40,7 +40,7 @@ class UrbanTest(unittest.TestCase):
     def setUp(self):
         httpretty.enable()
 
-    def test_urban(self):
+    def test_good(self):
         plugin = nonobot.plugins.urban.Plugin({})
         term = 'foo'
         url = '%s/define?term=%s' % (nonobot.plugins.urban.BASE_URL, term)
@@ -80,7 +80,7 @@ class UrbanTest(unittest.TestCase):
         reply = 'That\'s way too much we have only 1 items'
         self.assertEqual(plugin.urban(term), reply)
 
-    def test_urban_nothing(self):
+    def test_nothing(self):
         plugin = nonobot.plugins.urban.Plugin({})
         term = 'nothing'
         url = '%s/define?term=%s' % (nonobot.plugins.urban.BASE_URL, term)
@@ -94,7 +94,7 @@ class UrbanTest(unittest.TestCase):
 
         self.assertEqual(plugin.urban(term), reply)
 
-    def test_urban_random(self):
+    def test_random(self):
         plugin = nonobot.plugins.urban.Plugin({})
         url = '%s/random' % nonobot.plugins.urban.BASE_URL
         rnd = random.randint(0, 1)
