@@ -40,7 +40,7 @@ class PluginBugTest(unittest.TestCase):
                          "%s/%s" % (nonobot.plugins.bug.BASE_URL,
                                     bug_number))
 
-    @unittest.skipIf(not launchpadlib, "launchpadlib is not installed")
+    @unittest.skipUnless(launchpadlib, "launchpadlib is not installed")
     @mock.patch("launchpadlib.launchpad.Launchpad.login_anonymously")
     def test_convert_with_launchpadlib(self, mocked):
         class FakeBugSet():
@@ -51,7 +51,7 @@ class PluginBugTest(unittest.TestCase):
         self.assertEqual(plugin.stream("bug 10000"),
                          "[Bug 10000] Fake Bug - http://launchpad/bug/1000")
 
-    @unittest.skipIf(not launchpadlib, "launchpadlib is not installed")
+    @unittest.skipUnless(launchpadlib, "launchpadlib is not installed")
     @mock.patch("launchpadlib.launchpad.Launchpad.login_anonymously")
     def test_convert_with_launchpadlib_bug_no_here(self, mocked):
         def keyerror():
@@ -61,7 +61,7 @@ class PluginBugTest(unittest.TestCase):
         self.assertEqual(plugin.stream("bug 10000"),
                          "There is no such bug '10000'")
 
-    @unittest.skipIf(not launchpadlib, "launchpadlib is not installed")
+    @unittest.skipUnless(launchpadlib, "launchpadlib is not installed")
     @mock.patch("launchpadlib.launchpad.Launchpad.login_anonymously")
     def test_convert_with_launchpadlib_bug_no_match(self, mocked):
         plugin = nonobot.plugins.bug.Plugin({}, True)
