@@ -96,7 +96,7 @@ class Plugin(nonobot.plugins.Base):
 
     def stream(self, msg):
         """@group will message to all the group members."""
-        _msg = msg.split()
+        _msg = msg.strip().split()
         if not _msg:
             return
         alias = _msg[0]
