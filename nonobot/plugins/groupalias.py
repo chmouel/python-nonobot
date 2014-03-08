@@ -43,7 +43,10 @@ class Plugin(nonobot.plugins.Base):
         self.config = config
 
         if os.path.exists(self.group_file):
-            self._groups = cPickle.load(open(self.group_file, 'r'))
+            try:
+                self._groups = cPickle.load(open(self.group_file, 'r'))
+            except(EOFError):
+                self._groups = {}
 
     def _save_group_file(self):
         cPickle.dump(self._groups, open(self.group_file, 'wb'))
