@@ -107,8 +107,8 @@ class Plugin(nonobot.plugins.Base):
             return
 
         if group_name == 'all':
-            all = set([item for sublist in self._groups.values()
-                       for item in sublist])
+            all = sorted(set([item for sublist in self._groups.values()
+                              for item in sublist]))
             return ", ".join(all) + ": " + body_msg
 
         if group_name in self._groups:
