@@ -24,6 +24,7 @@ class Plugin(nonobot.plugins.Base):
         self.seen_dict = {}
 
     def seen(self, msg, **kwargs):
+        """ask the bot when last a user was seen here."""
         ret = []
         for nick in msg['body'].split(" "):
             cleaned = nutils.clean_nick(nick)
