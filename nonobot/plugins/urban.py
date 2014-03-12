@@ -27,7 +27,7 @@ class Plugin(nonobot.plugins.Base):
         split = msg['body'].split()
         index = 1
         method = 'define'
-        query = ''
+        query = msg['body']
 
         if not split or split[-1].isdigit() and len(split) == 1:
             method = 'random'
