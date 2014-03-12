@@ -15,14 +15,27 @@
 import shutil
 import tempfile
 
+import mock
+
 
 class FakeMessage(object):
-    def __init__(self, message=None, nick=None):
-        self.nick = nick
-        self.message = message
+    _dict = None
+
+    def __init__(self, body=None, nick=None, reply_mock=mock.Mock()):
+        self._dict = dict(nick=nick, body=body)
+        self.reply_mock = reply_mock
+
+    def __getitem__(self, k):
+        return self._dict.get(k)
+
+    def __setitem__(self, k, v):
+        self._dict[k] = v
 
     def get_mucnick(self):
-        return self.nick
+        return self._dict.get('nick')
+
+    def reply(self, *args, **kwargs):
+        return self.reply_mock(*args, **kwargs)
 
 
 class FakeFrom(object):

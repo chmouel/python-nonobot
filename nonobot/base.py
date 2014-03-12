@@ -28,6 +28,7 @@ class NoNoBot(sleekxmpp.ClientXMPP):
 
         self.add_event_handler("session_start", self.start)
         self.add_event_handler("groupchat_message", self.groupchat_message)
+        self.add_event_handler("message", self.message)
 
     def start(self, event):
         self.get_roster()
@@ -35,6 +36,27 @@ class NoNoBot(sleekxmpp.ClientXMPP):
         self.plugin['xep_0045'].joinMUC(self.room,
                                         self.nick,
                                         wait=True)
+
+    def message(self, msg):
+        reply_msg = None
+        _line = msg['body'].split()
+        action = _line[0]
+        new_msg = (msg)
+        new_msg['body'] = " ".join(_line[1:])
+
+        if action == 'help' and 'help' in self.plugins:
+            reply_msg = self.plugins['help']
+        else:
+            for plugin in self.plugins:
+                if action in self.plugins[plugin]:
+                    action_ = self.plugins[plugin][action]['action']
+                    reply_msg = action_(new_msg)
+
+        if type(reply_msg) is list:
+            reply_msg = "\n".join(reply_msg)
+
+        if reply_msg:
+            msg.reply(reply_msg).send()
 
     def groupchat_message(self, msg):
         reply_msg = None

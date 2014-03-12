@@ -24,8 +24,13 @@ SAMPLE_PLUGIN_METHOD = """
 class Plugin:
     def __init__(self, config):
         pass
+
     def foo(self, msg):
         return "Hello World"
+
+    def foo_multiple(self, msg):
+        return ["Hello", "World"]
+
     def foo_doc(self, msg):
         "THIS IS SOME DOC"
         pass
@@ -64,6 +69,38 @@ class BaseTest(unittest.TestCase):
 
         m = cls.groupchat_message(msg)
         self.assertIsNone(m)
+
+    def test_message_direct(self):
+        with fixtures.cleaned_tempdir() as path:
+            test_file = path + "/test_message_direct.py"
+            open(test_file, 'w').write(SAMPLE_PLUGIN_METHOD)
+            plugins = nonobot.plugins.get_plugins_methods(path, {'foo: bar'})
+            cls = nonobot.base.NoNoBot(
+                self.username, self.password, self.room,
+                self.nick,
+                plugins=plugins)
+
+            msg = fixtures.FakeMessage(body="havanagila")
+            m = cls.message(msg)
+            self.assertIsNone(m)
+
+            reply_mock = mock.Mock()
+            msg = fixtures.FakeMessage(body="foo", reply_mock=reply_mock)
+            m = cls.message(msg)
+            reply_mock.assert_called_once_with('Hello World')
+
+            reply_mock = mock.Mock()
+            msg = fixtures.FakeMessage(body="foo_multiple",
+                                       reply_mock=reply_mock)
+            m = cls.message(msg)
+            reply_mock.assert_called_once_with('Hello\nWorld')
+
+            reply_mock = mock.Mock()
+            msg = fixtures.FakeMessage(body="help",
+                                       reply_mock=reply_mock)
+            m = cls.message(msg)
+            reply_msg = '[test_message_direct] foo_doc: THIS IS SOME DOC'
+            reply_mock.assert_called_once_with(reply_msg)
 
     def test_message_stream_nothing_todo(self):
         with fixtures.cleaned_tempdir() as path:
