@@ -39,5 +39,5 @@ class Plugin(nonobot.plugins.Base):
         return ret
 
     def stream(self, msg):
-        nick = msg.get_mucnick()
+        nick = msg['from']
         self.seen_dict[nutils.clean_nick(nick)] = datetime.datetime.now()
