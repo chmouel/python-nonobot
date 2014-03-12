@@ -16,6 +16,15 @@ import shutil
 import tempfile
 
 
+class FakeMessage(object):
+    def __init__(self, message=None, nick=None):
+        self.nick = nick
+        self.message = message
+
+    def get_mucnick(self):
+        return self.nick
+
+
 class FakeFrom(object):
     bare = 'thedude'
 

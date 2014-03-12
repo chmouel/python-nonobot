@@ -14,6 +14,7 @@
 # under the License.
 import datetime
 import random
+import urllib
 
 import nonobot.plugins
 import nonobot.utils as nutils
@@ -28,16 +29,14 @@ class Plugin(nonobot.plugins.Base):
 
     def seen(self, msg, **kwargs):
         """ask the bot when last a user was seen here."""
-        ret = []
-        for nick in msg['body'].split(" "):
-            cleaned = nutils.clean_nick(nick)
-            if cleaned in self.seen_dict:
-                pretty = nutils.pretty_date(self.seen_dict[cleaned])
-                ret.append("I saw %s %s here %s" % (cleaned,
-                                                    random.choice(RANDOM_TALK),
-                                                    pretty))
-        return ret
+        cleaned = nutils.clean_nick(msg['body'])
+        if cleaned in self.seen_dict:
+            unquoted = urllib.unquote(cleaned)
+            pretty = nutils.pretty_date(self.seen_dict[cleaned])
+            return "I saw %s %s here %s" % (unquoted,
+                                            random.choice(RANDOM_TALK),
+                                            pretty)
 
     def stream(self, msg):
-        nick = msg['from']
+        nick = msg.get_mucnick()
         self.seen_dict[nutils.clean_nick(nick)] = datetime.datetime.now()

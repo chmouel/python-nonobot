@@ -13,11 +13,13 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 import datetime
+import urllib
 
 
 def clean_nick(nick):
     while nick[-1] == '_':
         nick = nick[:-1]
+    nick = urllib.quote(nick)
     return nick
 
 

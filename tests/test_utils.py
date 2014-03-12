@@ -13,6 +13,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 import unittest
+import urllib
 
 import nonobot.utils as nutils
 
@@ -21,5 +22,12 @@ class UtilsTest(unittest.TestCase):
     def test_clean_nick(self):
         self.assertEqual(nutils.clean_nick("foo_____"),
                          'foo')
+
+    def test_quoted(self):
         self.assertEqual(nutils.clean_nick("foo***"),
-                         "foo***")
+                         urllib.quote("foo***"))
+
+    def test_clean_nick_with_space(self):
+        name = "foo bar"
+        self.assertEqual(nutils.clean_nick(name),
+                         urllib.quote(name))
