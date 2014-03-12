@@ -41,6 +41,8 @@ class Plugin:
 """
 
 
+@mock.patch('nonobot.base.NoNoBot.add_event_handler', mock.Mock())
+@mock.patch('sleekxmpp.ClientXMPP.__init__', mock.Mock())
 class BaseTest(unittest.TestCase):
 
     def setUp(self):
@@ -49,15 +51,12 @@ class BaseTest(unittest.TestCase):
         self.nick = 'nick'
         self.room = 'room'
 
-    @mock.patch('nonobot.base.NoNoBot.add_event_handler', mock.Mock())
-    @mock.patch('sleekxmpp.ClientXMPP.__init__')
-    def test_init(self, mocked):
-        cls = nonobot.base.NoNoBot(
-            self.username, self.password, self.room, self.nick)
-        mocked.assert_called_with(cls, self.username, self.password)
+    def test_init(self):
+        with mock.patch('sleekxmpp.ClientXMPP.__init__') as mocked:
+            cls = nonobot.base.NoNoBot(
+                self.username, self.password, self.room, self.nick)
+            mocked.assert_called_with(cls, self.username, self.password)
 
-    @mock.patch('nonobot.base.NoNoBot.add_event_handler', mock.Mock())
-    @mock.patch('sleekxmpp.ClientXMPP.__init__', mock.Mock())
     def test_message_return_if_no_plugins(self):
         cls = nonobot.base.NoNoBot(
             self.username, self.password, self.room, self.nick)
@@ -66,8 +65,6 @@ class BaseTest(unittest.TestCase):
         m = cls.groupchat_message(msg)
         self.assertIsNone(m)
 
-    @mock.patch('nonobot.base.NoNoBot.add_event_handler', mock.Mock())
-    @mock.patch('sleekxmpp.ClientXMPP.__init__', mock.Mock())
     def test_message_stream_nothing_todo(self):
         with fixtures.cleaned_tempdir() as path:
             test_file = path + "/tstream.py"
@@ -82,8 +79,6 @@ class BaseTest(unittest.TestCase):
             m = cls.groupchat_message(msg)
             self.assertIsNone(m)
 
-    @mock.patch('nonobot.base.NoNoBot.add_event_handler', mock.Mock())
-    @mock.patch('sleekxmpp.ClientXMPP.__init__', mock.Mock())
     def test_undefined_action_return(self):
         with fixtures.cleaned_tempdir() as path:
             test_file = path + "/tstream.py"
@@ -98,8 +93,6 @@ class BaseTest(unittest.TestCase):
             m = cls.groupchat_message(msg)
             self.assertIsNone(m)
 
-    @mock.patch('nonobot.base.NoNoBot.add_event_handler', mock.Mock())
-    @mock.patch('sleekxmpp.ClientXMPP.__init__', mock.Mock())
     @mock.patch('sleekxmpp.ClientXMPP.send_message')
     def test_help(self, mocked):
         with fixtures.cleaned_tempdir() as path:
@@ -123,8 +116,6 @@ class BaseTest(unittest.TestCase):
                                       mbody=mbody,
                                       mto='thedude')
 
-    @mock.patch('nonobot.base.NoNoBot.add_event_handler', mock.Mock())
-    @mock.patch('sleekxmpp.ClientXMPP.__init__', mock.Mock())
     @mock.patch('sleekxmpp.ClientXMPP.send_message')
     def test_command(self, mocked):
         with fixtures.cleaned_tempdir() as path:
@@ -143,8 +134,6 @@ class BaseTest(unittest.TestCase):
                                       mbody='Hello World',
                                       mto='thedude')
 
-    @mock.patch('nonobot.base.NoNoBot.add_event_handler', mock.Mock())
-    @mock.patch('sleekxmpp.ClientXMPP.__init__', mock.Mock())
     @mock.patch('sleekxmpp.ClientXMPP.send_message')
     def test_stream(self, mocked):
         with fixtures.cleaned_tempdir() as path:
