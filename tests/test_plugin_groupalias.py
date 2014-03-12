@@ -152,6 +152,21 @@ class PluginTest(unittest.TestCase):
         self.assertEqual("%s: %s" % (", ".join(aliases), phrase),
                          ret)
 
+    def test_stream_with_colon_comma(self):
+        alias = 'foo'
+        aliases = ['bar', 'linux']
+        phrase = 'hello ca va?'
+        cPickle.dump({alias: aliases}, self.temp_file)
+        self.temp_file.close()
+
+        plug = nonobot.plugins.groupalias.Plugin(FakeConfig(self.temp_file))
+
+        for char in [',', ':']:
+            msg = {'body': "@%s%s %s" % (alias, char, phrase)}
+            ret = plug.stream(msg)
+            self.assertEqual("%s: %s" % (", ".join(aliases), phrase),
+                             ret)
+
     def test_stream_all(self):
         alias1 = 'foo'
         aliases1 = ['ola', 'cabron']

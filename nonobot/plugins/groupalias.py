@@ -97,14 +97,14 @@ class Plugin(nonobot.plugins.Base):
     def stream(self, msg):
         """@group will message to all the group members."""
         _msg = msg['body'].strip().split()
-        if not _msg:
+        if not _msg or not _msg[0].startswith("@"):
             return
         alias = _msg[0]
-        group_name = alias.replace('@', '')
-        body_msg = " ".join(_msg[1:])
+        group_name = alias
+        for char in ['@', ':', ',']:
+            group_name = group_name.replace(char, '')
 
-        if not alias.startswith("@"):
-            return
+        body_msg = " ".join(_msg[1:])
 
         if group_name == 'all':
             all = sorted(set([item for sublist in self._groups.values()
