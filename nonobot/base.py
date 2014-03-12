@@ -38,27 +38,29 @@ class NoNoBot(sleekxmpp.ClientXMPP):
 
     def message(self, msg):
         reply_msg = None
-        body = msg['body']
 
         if not self.plugins:
             return
 
-        if body.startswith(self.nick + ":"):
-            _line = body[len(self.nick) + 1:].split()
+        if msg['body'].startswith(self.nick + ":"):
+            _line = msg['body'][len(self.nick) + 1:].split()
             action = _line[0]
+            new_msg = (msg)
+            new_msg['body'] = " ".join(_line[1:])
+
             if action == 'help' and 'help' in self.plugins:
                 reply_msg = self.plugins['help']
             else:
                 for plugin in self.plugins:
                     if action in self.plugins[plugin]:
                         action_ = self.plugins[plugin][action]['action']
-                        reply_msg = action_(" ".join(_line[1:]))
+                        reply_msg = action_(new_msg)
 
         for plugin in self.plugins:
             if 'stream' not in self.plugins[plugin]:
                 continue
 
-            stream = self.plugins[plugin]['stream']['action'](body)
+            stream = self.plugins[plugin]['stream']['action'](msg)
             if stream is not None:
                 reply_msg = stream
 

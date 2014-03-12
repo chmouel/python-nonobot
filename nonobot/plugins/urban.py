@@ -22,11 +22,12 @@ BASE_URL = 'http://api.urbandictionary.com/v0'
 
 
 class Plugin(nonobot.plugins.Base):
-    def urban(self, query):
+    def urban(self, msg):
         """get a definition from urban dictionary (eg: urban foo 3)."""
-        split = query.split()
+        split = msg['body'].split()
         index = 1
         method = 'define'
+        query = ''
 
         if not split or split[-1].isdigit() and len(split) == 1:
             method = 'random'

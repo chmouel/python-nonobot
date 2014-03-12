@@ -35,8 +35,9 @@ class FakeLaunchPadBug(object):
 class PluginBugTest(unittest.TestCase):
     def test_convert_without_launchpadlib(self):
         bug_number = "10000"
+        msg = {'body': "bug " + bug_number}
         plugin = nonobot.plugins.bug.Plugin({}, False)
-        self.assertEqual(plugin.stream("bug " + bug_number),
+        self.assertEqual(plugin.stream(msg),
                          "%s/%s" % (nonobot.plugins.bug.BASE_URL,
                                     bug_number))
 
@@ -48,7 +49,8 @@ class PluginBugTest(unittest.TestCase):
             web_link = "http://launchpad/bug/1000"
         mocked.return_value = FakeLaunchPadBug(FakeBugSet)
         plugin = nonobot.plugins.bug.Plugin({}, True)
-        self.assertEqual(plugin.stream("bug 10000"),
+        msg = {'body': "bug 10000"}
+        self.assertEqual(plugin.stream(msg),
                          "[Bug 10000] Fake Bug - http://launchpad/bug/1000")
 
     @unittest.skipUnless(launchpadlib, "launchpadlib is not installed")
@@ -58,14 +60,15 @@ class PluginBugTest(unittest.TestCase):
             raise KeyError
         mocked.return_value = FakeLaunchPadBug(keyerror)
         plugin = nonobot.plugins.bug.Plugin({}, True)
-        self.assertEqual(plugin.stream("bug 10000"),
+        msg = {'body': "bug 10000"}
+        self.assertEqual(plugin.stream(msg),
                          "There is no such bug '10000'")
 
     @unittest.skipUnless(launchpadlib, "launchpadlib is not installed")
     @mock.patch("launchpadlib.launchpad.Launchpad.login_anonymously")
     def test_convert_with_launchpadlib_bug_no_match(self, mocked):
         plugin = nonobot.plugins.bug.Plugin({}, True)
-        self.assertIsNone(plugin.stream("foo bar"))
+        self.assertIsNone(plugin.stream({'body': 'foo bar'}))
 
 
 if __name__ == '__main__':

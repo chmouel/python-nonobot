@@ -66,13 +66,14 @@ class PluginTest(unittest.TestCase):
 
     def test_alias_no_msg_return(self):
         plug = nonobot.plugins.groupalias.Plugin(FakeConfig(self.temp_file))
-        self.assertIsNone(plug.alias(""))
+        self.assertIsNone(plug.alias({'body': ''}))
 
     def test_alias(self):
         plug = nonobot.plugins.groupalias.Plugin(FakeConfig(self.temp_file))
         alias = 'foo'
         aliases = ['bar', 'linux']
-        ret = plug.alias("foo bar linux")
+        msg = {'body': 'foo bar linux'}
+        ret = plug.alias(msg)
         self.assertEqual('%s has been set to %s' % (alias, " ".join(aliases)),
                          ret)
         self.temp_file.close()
@@ -86,8 +87,9 @@ class PluginTest(unittest.TestCase):
         cPickle.dump({alias: aliases}, self.temp_file)
         self.temp_file.close()
 
+        msg = {'body': "%s %s" % (alias, newalias)}
         plug = nonobot.plugins.groupalias.Plugin(FakeConfig(self.temp_file))
-        ret = plug.add("%s %s" % (alias, newalias))
+        ret = plug.add(msg)
         self.assertEqual("%s aliases has been added to %s" % (newalias, alias),
                          ret)
 
@@ -101,7 +103,8 @@ class PluginTest(unittest.TestCase):
         self.temp_file.close()
 
         plug = nonobot.plugins.groupalias.Plugin(FakeConfig(self.temp_file))
-        ret = plug.delete(alias)
+        msg = {'body': alias}
+        ret = plug.delete(msg)
         self.assertEqual(ret, '%s has been deleted' % alias)
 
         whatsaved = cPickle.load(open(self.temp_file.name, 'r'))
@@ -121,7 +124,8 @@ class PluginTest(unittest.TestCase):
         group = 'foo'
         newalias = 'bar'
         plug = nonobot.plugins.groupalias.Plugin(FakeConfig(self.temp_file))
-        ret = plug.add("%s %s" % (group, newalias))
+        msg = {'body': "%s %s" % (group, newalias)}
+        ret = plug.add(msg)
         self.assertEqual("group %s has not been defined yet use alias" % group,
                          ret)
 
@@ -132,7 +136,7 @@ class PluginTest(unittest.TestCase):
         self.temp_file.close()
 
         plug = nonobot.plugins.groupalias.Plugin(FakeConfig(self.temp_file))
-        ret = plug.stream("@unknown hola que tal")
+        ret = plug.stream({'body': "@unknown hola que tal"})
         self.assertIsNone(ret)
 
     def test_stream(self):
@@ -143,7 +147,8 @@ class PluginTest(unittest.TestCase):
         self.temp_file.close()
 
         plug = nonobot.plugins.groupalias.Plugin(FakeConfig(self.temp_file))
-        ret = plug.stream("@%s %s" % (alias, phrase))
+        msg = {'body': "@%s %s" % (alias, phrase)}
+        ret = plug.stream(msg)
         self.assertEqual("%s: %s" % (", ".join(aliases), phrase),
                          ret)
 
@@ -157,16 +162,17 @@ class PluginTest(unittest.TestCase):
         self.temp_file.close()
 
         plug = nonobot.plugins.groupalias.Plugin(FakeConfig(self.temp_file))
-        ret = plug.stream("@all %s" % (phrase))
+        msg = {'body': '@all %s' % (phrase)}
+        ret = plug.stream(msg)
         self.assertEqual("%s: %s" % (", ".join(sorted(aliases1 + aliases2)),
                                      phrase), ret)
 
     def test_stream_no_msg_return(self):
         plug = nonobot.plugins.groupalias.Plugin(FakeConfig(self.temp_file))
-        ret = plug.stream("")
+        ret = plug.stream({'body': ""})
         self.assertIsNone(ret)
 
     def test_stream_no_atmessage_return(self):
         plug = nonobot.plugins.groupalias.Plugin(FakeConfig(self.temp_file))
-        ret = plug.stream("hola hola")
+        ret = plug.stream({'body': "hola hola"})
         self.assertIsNone(ret)

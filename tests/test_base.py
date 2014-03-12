@@ -24,9 +24,9 @@ SAMPLE_PLUGIN_METHOD = """
 class Plugin:
     def __init__(self, config):
         pass
-    def foo(self, line):
+    def foo(self, msg):
         return "Hello World"
-    def foo_doc(self, line):
+    def foo_doc(self, msg):
         "THIS IS SOME DOC"
         pass
 """
@@ -36,7 +36,7 @@ class Plugin:
     def __init__(self, config):
         pass
 
-    def stream(self, line):
+    def stream(self, msg):
         return "Hello Stream"
 """
 
@@ -131,10 +131,8 @@ class BaseTest(unittest.TestCase):
             test_file = path + "/testcommand.py"
             open(test_file, 'w').write(SAMPLE_PLUGIN_METHOD)
             plugins = nonobot.plugins.get_plugins_methods(path, {'foo: bar'})
-            cls = nonobot.base.NoNoBot(
-                self.username, self.password, self.room,
-                self.nick,
-                plugins=plugins)
+            cls = nonobot.base.NoNoBot(self.username, self.password,
+                                       self.room, self.nick, plugins=plugins)
 
             msg = {'body': self.nick + ': foo',
                    'from': fixtures.FakeFrom}

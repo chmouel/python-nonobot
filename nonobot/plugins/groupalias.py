@@ -53,8 +53,8 @@ class Plugin(nonobot.plugins.Base):
 
     def alias(self, msg):
         """define a group."""
-        logging.debug('alias, msg=' + msg)
-        _msg = msg.split()
+        logging.debug('alias, msg=' + msg['body'])
+        _msg = msg['body'].split()
         if not _msg:
             return
         alias = _msg[0]
@@ -66,7 +66,7 @@ class Plugin(nonobot.plugins.Base):
 
     def delete(self, msg):
         """delete a group."""
-        alias = msg.split()[0]
+        alias = msg['body'].split()[0]
         del self._groups[alias]
         self._save_group_file()
         return "%s has been deleted" % alias
@@ -82,7 +82,7 @@ class Plugin(nonobot.plugins.Base):
 
     def add(self, msg):
         """add a member to an existing group."""
-        _msg = msg.split()
+        _msg = msg['body'].split()
         alias = _msg[0]
         aliases = _msg[1:]
 
@@ -96,7 +96,7 @@ class Plugin(nonobot.plugins.Base):
 
     def stream(self, msg):
         """@group will message to all the group members."""
-        _msg = msg.strip().split()
+        _msg = msg['body'].strip().split()
         if not _msg:
             return
         alias = _msg[0]

@@ -42,7 +42,7 @@ class UrbanTest(unittest.TestCase):
 
     def test_good(self):
         plugin = nonobot.plugins.urban.Plugin({})
-        term = 'foo'
+        term = {'body': 'foo'}
         url = '%s/define?term=%s' % (nonobot.plugins.urban.BASE_URL, term)
 
         httpretty.register_uri(httpretty.GET, url,
@@ -56,7 +56,7 @@ class UrbanTest(unittest.TestCase):
 
     def test_multiple_with_index(self):
         plugin = nonobot.plugins.urban.Plugin({})
-        term = 'foo 2'
+        term = {'body': 'foo 2'}
         url = '%s/define?term=%s' % (nonobot.plugins.urban.BASE_URL, term)
 
         httpretty.register_uri(httpretty.GET, url,
@@ -70,7 +70,7 @@ class UrbanTest(unittest.TestCase):
 
     def test_excessive_index(self):
         plugin = nonobot.plugins.urban.Plugin({})
-        term = 'foo 5'
+        term = {'body': 'foo 5'}
         url = '%s/define?term=%s' % (nonobot.plugins.urban.BASE_URL, term)
 
         httpretty.register_uri(httpretty.GET, url,
@@ -82,7 +82,7 @@ class UrbanTest(unittest.TestCase):
 
     def test_nothing(self):
         plugin = nonobot.plugins.urban.Plugin({})
-        term = 'nothing'
+        term = {'body': 'nothing'}
         url = '%s/define?term=%s' % (nonobot.plugins.urban.BASE_URL, term)
 
         httpretty.register_uri(httpretty.GET, url,
@@ -107,4 +107,4 @@ class UrbanTest(unittest.TestCase):
             reply = '[%(word)s] %(definition)s example: %(example)s / ' \
                     '%(permalink)s' % URBAN_REPLY_MULTIPLE['list'][rnd]
 
-            self.assertEqual(plugin.urban(''), reply)
+            self.assertEqual(plugin.urban({'body': ''}), reply)

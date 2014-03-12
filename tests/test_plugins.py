@@ -28,9 +28,9 @@ SAMPLE_PLUGIN_METHOD = """
 class Plugin:
     def __init__(self, config):
         pass
-    def foo(self, line):
+    def foo(self, line, **kwargs):
         pass
-    def foo_doc(self, line):
+    def foo_doc(self, line, **kwargs):
         "THIS IS SOME DOC"
         pass
 """
@@ -39,7 +39,7 @@ SAMPLE_PLUGIN_STREAM = """
 class Plugin:
     def __init__(self, config):
         pass
-    def stream(self, line):
+    def stream(self, line, **kwargs):
         "DOC STREAM"
         pass
 """
