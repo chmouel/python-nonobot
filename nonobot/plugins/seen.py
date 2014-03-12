@@ -13,9 +13,12 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 import datetime
+import random
 
 import nonobot.plugins
 import nonobot.utils as nutils
+
+RANDOM_TALK = ["talking", "pipoté", "sprechen", "hablan", "parlare"]
 
 
 class Plugin(nonobot.plugins.Base):
@@ -30,7 +33,9 @@ class Plugin(nonobot.plugins.Base):
             cleaned = nutils.clean_nick(nick)
             if cleaned in self.seen_dict:
                 pretty = nutils.pretty_date(self.seen_dict[cleaned])
-                ret.append("I saw %s %s" % (cleaned, pretty))
+                ret.append("I saw %s here %s" % (cleaned,
+                                                 random.choice(RANDOM_TALK),
+                                                 pretty))
         return ret
 
     def stream(self, msg):
