@@ -17,6 +17,9 @@ import urllib
 
 
 def clean_nick(nick):
+    if not nick:
+        return
+
     while nick[-1] == '_':
         nick = nick[:-1]
     nick = urllib.quote(nick)

@@ -23,6 +23,9 @@ class UtilsTest(unittest.TestCase):
         self.assertEqual(nutils.clean_nick("foo_____"),
                          'foo')
 
+    def test_clean_nick_nothing_on_empty(self):
+        self.assertIsNone(nutils.clean_nick(""))
+
     def test_quoted(self):
         self.assertEqual(nutils.clean_nick("foo***"),
                          urllib.quote("foo***"))
