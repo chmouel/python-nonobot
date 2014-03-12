@@ -63,7 +63,7 @@ class BaseTest(unittest.TestCase):
             self.username, self.password, self.room, self.nick)
         msg = {'body': 'hello moto'}
 
-        m = cls.message(msg)
+        m = cls.groupchat_message(msg)
         self.assertIsNone(m)
 
     @mock.patch('nonobot.base.NoNoBot.add_event_handler', mock.Mock())
@@ -79,7 +79,7 @@ class BaseTest(unittest.TestCase):
                 plugins=plugins)
             msg = {'body': 'hello moto'}
 
-            m = cls.message(msg)
+            m = cls.groupchat_message(msg)
             self.assertIsNone(m)
 
     @mock.patch('nonobot.base.NoNoBot.add_event_handler', mock.Mock())
@@ -95,7 +95,7 @@ class BaseTest(unittest.TestCase):
                 plugins=plugins)
             msg = {'body': '%s: unknown' % (self.nick)}
 
-            m = cls.message(msg)
+            m = cls.groupchat_message(msg)
             self.assertIsNone(m)
 
     @mock.patch('nonobot.base.NoNoBot.add_event_handler', mock.Mock())
@@ -116,7 +116,7 @@ class BaseTest(unittest.TestCase):
             msg = {'body': self.nick + ': help',
                    'from': fixtures.FakeFrom}
 
-            cls.message(msg)
+            cls.groupchat_message(msg)
 
             mbody = '[testhelp] foo_doc: THIS IS SOME DOC'
             mocked.assert_called_with(mtype='groupchat',
@@ -137,7 +137,7 @@ class BaseTest(unittest.TestCase):
             msg = {'body': self.nick + ': foo',
                    'from': fixtures.FakeFrom}
 
-            cls.message(msg)
+            cls.groupchat_message(msg)
 
             mocked.assert_called_with(mtype='groupchat',
                                       mbody='Hello World',
@@ -159,7 +159,7 @@ class BaseTest(unittest.TestCase):
             msg = {'body': 'callstream',
                    'from': fixtures.FakeFrom}
 
-            cls.message(msg)
+            cls.groupchat_message(msg)
 
             mocked.assert_called_with(mtype='groupchat',
                                       mbody='Hello Stream',

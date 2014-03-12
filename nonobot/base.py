@@ -27,7 +27,7 @@ class NoNoBot(sleekxmpp.ClientXMPP):
         self.plugins = plugins
 
         self.add_event_handler("session_start", self.start)
-        self.add_event_handler("groupchat_message", self.message)
+        self.add_event_handler("groupchat_message", self.groupchat_message)
 
     def start(self, event):
         self.get_roster()
@@ -36,7 +36,7 @@ class NoNoBot(sleekxmpp.ClientXMPP):
                                         self.nick,
                                         wait=True)
 
-    def message(self, msg):
+    def groupchat_message(self, msg):
         reply_msg = None
 
         if not self.plugins:
