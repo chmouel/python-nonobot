@@ -120,6 +120,30 @@ class PluginTest(unittest.TestCase):
         ret = plug.list(alias)
         self.assertEqual(ret[0], 'alias foo => bar, linux')
 
+    def test_list_specific_group(self):
+        alias1 = 'foo'
+        aliases1 = ['ola', 'cabron']
+        alias2 = 'ini'
+        aliases2 = ['mani', 'mo']
+        cPickle.dump({alias1: aliases1, alias2: aliases2}, self.temp_file)
+        self.temp_file.close()
+
+        plug = nonobot.plugins.groupalias.Plugin(FakeConfig(self.temp_file))
+        ret = plug.list(alias1)
+        self.assertEqual(len(ret), 1)
+        self.assertEqual(ret[0], 'alias %s => %s' %
+                         (alias1, ", ".join(aliases1)))
+
+    def test_list_group_not_here(self):
+        alias1 = 'foo'
+        aliases1 = ['ola', 'cabron']
+        cPickle.dump({alias1: aliases1}, self.temp_file)
+        self.temp_file.close()
+
+        plug = nonobot.plugins.groupalias.Plugin(FakeConfig(self.temp_file))
+        ret = plug.list("nothere")
+        self.assertEqual(ret[0], 'There is no such group nothere')
+
     def test_list_no_alias_there(self):
         group = 'foo'
         newalias = 'bar'

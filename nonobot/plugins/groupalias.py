@@ -74,10 +74,19 @@ class Plugin(nonobot.plugins.Base):
     def list(self, msg):
         """list specifics or all groups: list [group]"""
         ret = []
-        for g in self._groups.keys():
-            ret.append('alias %s => %s' % (
-                g, ", ".join(self._groups.get(g))
-            ))
+        if msg.strip():
+            group = msg.strip()
+            if group in self._groups:
+                ret.append('alias %s => %s' % (
+                    group, ", ".join(self._groups.get(group))
+                ))
+            else:
+                ret.append('There is no such group %s' % (group))
+        else:
+            for g in self._groups.keys():
+                ret.append('alias %s => %s' % (
+                    g, ", ".join(self._groups.get(g))
+                ))
         return ret
 
     def add(self, msg):
