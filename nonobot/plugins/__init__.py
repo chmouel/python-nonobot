@@ -12,54 +12,54 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-import imp
 import inspect
-import os
+
+import stevedore
 
 
-def get_all_plugin_modules(path):
-    for dirname, _, filenames in os.walk(path):
-        for f in filenames:
-            if not f.endswith(".py") or f == '__init__.py':
-                continue
-            path_join = os.path.join(dirname, f)
-            yield imp.load_source(f.replace('.py', ''), path_join)
+class Manager(object):
+    def __init__(self, extension_manager=None):
+        self.extension_manager = extension_manager
+        if self.extension_manager is None:
+            self.extension_manager = self._extension_manager()
 
+    def _extension_manager(self):
+        manager = stevedore.extension.ExtensionManager(
+            namespace='nonobot.plugins')
+        return manager
 
-def plugins_add_extra_options(path, optp):
-    for imported in get_all_plugin_modules(path):
-        attributes = inspect.getmembers(imported)
-        for x in attributes:
-            if x[0] == '_arguments':
-                x[1](optp)
+    def add_extra_options(self, optp):
+        for imported in self.extension_manager:
+            attributes = inspect.getmembers(imported.plugin)
+            for x in attributes:
+                if x[0] == '_arguments':
+                    x[1](optp)
 
+    def get_methods(self, config):
+        plugins = {}
+        docs = []
+        for imported in self.extension_manager:
+            plugin = imported.plugin.Plugin(config)
+            attributes = inspect.getmembers(plugin,
+                                            lambda a: inspect.isroutine(a))
+            actions = {}
+            for a in attributes:
+                method_name = a[0]
+                if not method_name.startswith('_'):
+                    action = a[1]
+                    doc = a[1].__doc__
+                    bname = imported.plugin.__name__.split('.')[-1]
+                    if method_name == 'stream':
+                        docstr = "[%s] %s" % (bname, doc)
+                    else:
+                        docstr = "[%s] %s: %s" % (bname, method_name, doc)
+                    if doc is not None:
+                        docs.append(docstr)
+                    actions[method_name] = dict(action=action, doc=doc)
+            plugins[plugin] = actions
 
-def get_plugins_methods(path, config):
-    plugins = {}
-    docs = []
-
-    for imported in get_all_plugin_modules(path):
-        plugin = imported.Plugin(config)
-        attributes = inspect.getmembers(plugin,
-                                        lambda a: inspect.isroutine(a))
-        actions = {}
-        for a in attributes:
-            method_name = a[0]
-            if not method_name.startswith('_'):
-                action = a[1]
-                doc = a[1].__doc__
-                if method_name == 'stream':
-                    docstr = "[%s] %s" % (imported.__name__, doc)
-                else:
-                    docstr = "[%s] %s: %s" % (imported.__name__,
-                                              method_name, doc)
-                if doc is not None:
-                    docs.append(docstr)
-                actions[method_name] = dict(action=action, doc=doc)
-        plugins[plugin] = actions
-
-    plugins['help'] = docs
-    return plugins
+        plugins['help'] = docs
+        return plugins
 
 
 class Base(object):
