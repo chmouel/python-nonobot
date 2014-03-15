@@ -20,9 +20,8 @@ import nonobot.main
 
 
 class MainTest(unittest.TestCase):
-    @mock.patch('nonobot.plugins.plugins_add_extra_options', mock.Mock())
     @mock.patch('optparse.OptionParser.print_help', mock.Mock())
-    @mock.patch('nonobot.plugins.get_all_plugin_modules', mock.MagicMock())
+    @mock.patch('nonobot.plugins.Manager', mock.MagicMock())
     def test_at_least_options(self):
         args = ['test',
                 '-j', 'jid@jid.com',
@@ -45,7 +44,6 @@ class MainTest(unittest.TestCase):
                 '-n', 'nick']
         self.assertEqual(nonobot.main.main(args), 1)
 
-    @mock.patch('nonobot.plugins.get_all_plugin_modules', mock.MagicMock())
     @mock.patch('nonobot.base.NoNoBot')
     def test_all_running_options(self, mock):
         jid = 'jid@jid.com'
@@ -59,14 +57,14 @@ class MainTest(unittest.TestCase):
                 '-r', room,
                 '-n', nick]
 
-        self.assertIsNone(nonobot.main.main(args))
+        self.assertIsNone(nonobot.main.main(args, plugins={}))
 
         mock.assert_called_once_with(
             jid=jid,
             room=room,
             password=password,
             nick=nick,
-            plugins={'help': []}
+            plugins={}
         )
 
     @mock.patch('nonobot.base.NoNoBot.connect', side_effect=socket.error)

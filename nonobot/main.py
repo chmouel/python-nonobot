@@ -21,7 +21,7 @@ import nonobot.base
 import nonobot.plugins
 
 
-def main(args=None):
+def main(args=None, plugins=None):
     """Main loop
 
     :param args: system argument to give to optparse.
@@ -54,10 +54,12 @@ def main(args=None):
     optp.add_option("-n", "--nick", dest="nick",
                     help="MUC nickname")
 
-    path = nonobot.plugins.__path__[0]
-    nonobot.plugins.plugins_add_extra_options(path, optp)
+    plugin_manager = nonobot.plugins.Manager()
+    plugin_manager.add_extra_options(optp)
+
     opts, args = optp.parse_args(args=args)
-    plugins = nonobot.plugins.get_plugins_methods(path, opts)
+    if plugins is None:
+        plugins = plugin_manager.get_methods(opts)
 
     if not all([opts.jid, opts.nick,
                 opts.room, opts.password]):

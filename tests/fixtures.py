@@ -16,6 +16,12 @@ import shutil
 import tempfile
 
 import mock
+from stevedore import extension
+
+import tests.sample1
+import tests.sample2
+
+import nonobot.plugins
 
 
 class FakeMessage(object):
@@ -53,3 +59,20 @@ class cleaned_tempdir(object):
         except OSError as exc:
             if exc.errno != 2:
                 raise
+
+
+def make_plugins(allplugins=(tests.sample1, tests.sample2)):
+    plugins = []
+    for _p in allplugins:
+        plugins.append(
+            extension.Extension(
+                '',
+                None,
+                _p,
+                None,
+            ),
+        )
+    exts = extension.ExtensionManager.make_test_instance(plugins)
+    plugin_manager = nonobot.plugins.Manager(exts)
+
+    return plugin_manager
