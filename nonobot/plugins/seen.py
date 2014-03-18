@@ -20,23 +20,40 @@ import nonobot.plugins
 import nonobot.utils as nutils
 
 RANDOM_TALK = ["talking", "pipoting", "spreching", "hablaning", "parlaring"]
+NOIP = "I ain't seen no one, I promess mister sherriffman."
 
 
 class Plugin(nonobot.plugins.Base):
 
     def __init__(self, config):
+        self.config = config
         self.seen_dict = {}
 
-    def seen(self, msg, **kwargs):
+    def list_seen(self, msg, **kwargs):
+        """List all users that has been seen by nonobot."""
+        ret = []
+        msg = {}
+
+        for u in self.seen_dict:
+            msg['body'] = u
+            ret.append(self.seen(msg, here="on " + self.config.room))
+        if not ret:
+            ret.append(NOIP)
+        return ret
+
+    def seen(self, msg, here="here", **kwargs):
         """ask the bot when last a user was seen here."""
         cleaned = nutils.clean_nick(msg['body'])
         if cleaned in self.seen_dict:
             unquoted = urllib.unquote(cleaned)
             pretty = nutils.pretty_date(self.seen_dict[cleaned])
-            return "I saw %s %s here %s" % (unquoted,
-                                            random.choice(RANDOM_TALK),
-                                            pretty)
+            return "I saw %s %s %s %s" % (unquoted,
+                                          random.choice(RANDOM_TALK),
+                                          here,
+                                          pretty)
+        else:
+            return NOIP
 
-    def stream(self, msg):
+    def stream(self, msg, **kwargs):
         nick = msg.get_mucnick()
         self.seen_dict[nutils.clean_nick(nick)] = datetime.datetime.now()

@@ -46,6 +46,21 @@ class PluginTest(unittest.TestCase):
         self.assertTrue(ret.startswith("I saw %s" % user))
         self.assertTrue(ret.endswith("just now"))
 
+    def test_seen_list(self):
+        m = mock.MagicMock()
+        m.room = 'room@conference.com'
+
+        user = 'eltorreador'
+        user2 = 'pipitodelcampo'
+        dt = datetime.datetime.now()
+        plugin = nonobot.plugins.seen.Plugin(m)
+        plugin.seen_dict = {user: dt, user2: dt}
+
+        ret = plugin.list_seen(None)
+        self.assertEqual(len(ret), 2)
+        self.assertTrue(ret[0].startswith('I saw ' + user))
+        self.assertTrue(ret[1].startswith('I saw ' + user2))
+
     def test_seen_with_space(self):
         user = 'eltorreador del campo'
         dt = datetime.datetime.now()
