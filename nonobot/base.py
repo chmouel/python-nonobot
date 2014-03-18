@@ -50,7 +50,7 @@ class NoNoBot(sleekxmpp.ClientXMPP):
             for plugin in self.plugins:
                 if action in self.plugins[plugin]:
                     action_ = self.plugins[plugin][action]['action']
-                    reply_msg = action_(new_msg)
+                    reply_msg = action_(new_msg, direct=True)
 
         if type(reply_msg) is list:
             reply_msg = "\n".join(reply_msg)
@@ -76,7 +76,7 @@ class NoNoBot(sleekxmpp.ClientXMPP):
                 for plugin in self.plugins:
                     if action in self.plugins[plugin]:
                         action_ = self.plugins[plugin][action]['action']
-                        reply_msg = action_(new_msg)
+                        reply_msg = action_(new_msg, direct=False)
 
         for plugin in self.plugins:
             if 'stream' not in self.plugins[plugin]:

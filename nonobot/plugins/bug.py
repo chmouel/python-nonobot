@@ -34,7 +34,7 @@ class Plugin(nonobot.plugins.Base):
             self.lp = launchpad.Launchpad.login_anonymously(
                 'nonobotgrab', 'production', tempfile.mkdtemp())
 
-    def stream(self, msg):
+    def stream(self, msg, **kwargs):
         """parse 'bug number' and expand it to launchpad bug url."""
         match = bug_re.match(msg['body'])
         if not match:

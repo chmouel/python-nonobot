@@ -22,7 +22,7 @@ BASE_URL = 'http://api.urbandictionary.com/v0'
 
 
 class Plugin(nonobot.plugins.Base):
-    def urban(self, msg):
+    def urban(self, msg, **kwargs):
         """get a definition from urban dictionary (eg: urban foo 3)."""
         split = msg['body'].split()
         index = 1

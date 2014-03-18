@@ -18,17 +18,17 @@ class Plugin(object):
     def __init__(self, config):
         pass
 
-    def foo(self, msg):
+    def foo(self, msg, **kwargs):
         return "Hello World"
 
-    def foo_multiple(self, msg):
+    def foo_multiple(self, msg, **kwargs):
         return ["Hello", "World"]
 
-    def foo_doc(self, msg):
+    def foo_doc(self, msg, **kwargs):
         "THIS IS SOME DOC"
         pass
 
-    def stream(self, msg):
+    def stream(self, msg, **kwargs):
         if msg['body'] != 'callstream':
             return
         return "Hello Stream"
