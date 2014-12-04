@@ -38,6 +38,8 @@ class Manager(object):
     def get_methods(self, config):
         plugins = {}
         docs = []
+        pollers = []
+
         for imported in self.extension_manager:
             plugin = imported.plugin.Plugin(config)
             attributes = inspect.getmembers(plugin,
@@ -56,9 +58,14 @@ class Manager(object):
                     if doc is not None:
                         docs.append(docstr)
                     actions[method_name] = dict(action=action, doc=doc)
+                elif method_name == "_init_poll":
+                    pollers.append(a[1])
+
             plugins[plugin] = actions
 
         plugins['help'] = docs
+        plugins['pollers'] = pollers
+
         return plugins
 
 

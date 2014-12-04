@@ -12,6 +12,9 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+import logging
+import threading
+
 import sleekxmpp
 
 
@@ -24,6 +27,9 @@ class NoNoBot(sleekxmpp.ClientXMPP):
         self.room = room
         self.nick = nick
 
+        self.current_pollers = []
+        self.current_timers = []
+
         self.plugins = plugins
 
         self.add_event_handler("session_start", self.start)
@@ -33,9 +39,57 @@ class NoNoBot(sleekxmpp.ClientXMPP):
     def start(self, event):
         self.get_roster()
         self.send_presence()
+
+        for poll in self.plugins['pollers']:
+            # TODO(chmou): this is ugly but that would do for now
+            interval, method = poll(self)
+            self.start_poller(interval, method)
+
         self.plugin['xep_0045'].joinMUC(self.room,
                                         self.nick,
                                         wait=True)
+
+    def start_poller(self, interval, method, args=None, kwargs=None):
+        args = args or {}
+        kwargs = kwargs or {}
+
+        try:
+            self.current_pollers.append((method, args, kwargs))
+            self.program_next_poll(interval, method, args, kwargs)
+        except Exception:
+            logging.traceback()
+
+    def stop_poller(self, method, args=None, kwargs=None):
+        args = args or {}
+        kwargs = kwargs or {}
+        logging.debug('Stop polling of %s with args %s and kwargs %s' %
+                      (method, args, kwargs))
+        self.current_pollers.remove((method, args, kwargs))
+
+    def program_next_poll(self, interval, method, args, kwargs):
+        t = threading.Timer(interval=interval,
+                            function=self.poller,
+                            kwargs={'interval': interval,
+                                    'method': method, 'args':
+                                    args, 'kwargs': kwargs})
+        self.current_timers.append(t)  # save the timer to be able to kill it
+        t.setName('Poller thread for %s' % type(method.__self__).__name__)
+        t.setDaemon(True)  # so it is not locking on exit
+        t.start()
+
+    def poller(self, interval, method, args, kwargs):
+        previous_timer = threading.current_thread()
+        if previous_timer in self.current_timers:
+            logging.debug('Previous timer found and removed')
+            self.current_timers.remove(previous_timer)
+
+        if (method, args, kwargs) in self.current_pollers:
+            # noinspection PyBroadException
+            try:
+                method(*args, **kwargs)
+            except Exception:
+                logging.error('A poller crashed')
+            self.program_next_poll(interval, method, args, kwargs)
 
     def message(self, msg):
         reply_msg = None
