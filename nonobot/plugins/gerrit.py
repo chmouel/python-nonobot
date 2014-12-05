@@ -97,14 +97,23 @@ class Plugin(nonobot.plugins.Base):
         self.cur.execute(query, (project,))
         self.conn.commit()
 
+    def _delete_project_to_watch(self, project):
+        query = ("DELETE FROM nonogerrit_config WHERE "
+                 "property='watched_projects' AND value=?")
+        self.cur.execute(query, (project,))
+        self.conn.commit()
+
     def _insert_in_database(self, review_id, updated):
         self.cur.execute("INSERT INTO nonogerrit_changes VALUES(?, ?)",
                          (review_id, updated))
         self.conn.commit()
 
     def gerrit_config(self, msg, **kwargs):
-        """add a project to watch."""
+        """add/del/list a project to watch."""
         _msg = msg['body'].split()
+        if not _msg:
+            return "OPTIONS are [add, list, del]"
+
         prop = _msg[0]
         if self.projects_to_watch is None:
             self._open_db()
@@ -122,7 +131,21 @@ class Plugin(nonobot.plugins.Base):
                 self.conn.close()
                 return "I will watch %s from now on" % project
 
-        return "OPTIONS are [add]"
+        if prop == "list":
+            if not self.projects_to_watch:
+                return "No project watched :("
+            return "I am watching: " + ", ".join(self.projects_to_watch)
+
+        if prop == "del":
+            project = _msg[1]
+            if project not in self.projects_to_watch:
+                return "%s is already watched!" % project
+            else:
+                self._open_db()
+                self.projects_to_watch.remove(project)
+                self._delete_project_to_watch(project)
+                self.conn.close()
+                return "%s is not watched anymore" % project
 
     def _refresh_gerrit(self):
 
