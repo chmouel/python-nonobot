@@ -95,6 +95,11 @@ class NoNoBot(sleekxmpp.ClientXMPP):
         reply_msg = None
         _line = msg['body'].split()
         action = _line[0]
+
+        if not action.startswith("!"):
+            return
+        action = action.replace("!", "")
+
         new_msg = (msg)
         new_msg['body'] = " ".join(_line[1:])
 
