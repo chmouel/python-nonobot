@@ -87,7 +87,7 @@ class NoNoBot(sleekxmpp.ClientXMPP):
             # noinspection PyBroadException
             try:
                 method(*args, **kwargs)
-            except Exception:
+            except Exception as e:
                 logging.error('A poller crashed')
             self.program_next_poll(interval, method, args, kwargs)
 
